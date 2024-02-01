@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 // Permission granted
             } else {
                 // Permission denied
-                
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
 
             }
         }
