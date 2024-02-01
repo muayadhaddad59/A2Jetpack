@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.example.mapd721aonemuayad
 
 import android.annotation.SuppressLint
@@ -35,7 +37,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
+import java.util.Locale
 
+@Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
@@ -64,23 +69,6 @@ class MainActivity : ComponentActivity() {
         requestPermissions(permissions, PERMISSION_REQUEST_CODE)
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-            } else {
-                // Permission denied
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-    }
 }
 
 @Composable
@@ -91,52 +79,63 @@ fun ContactManager(context: Context) {
 
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        OutlinedTextField(
-            value = contactName,
-            onValueChange = { contactName = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Contact Name") }
-        )
-        Spacer(modifier = Modifier.padding(top = 12.dp))
-        OutlinedTextField(
-            value = contactNO,
-            onValueChange = { contactNO = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Contact No") }
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            OutlinedTextField(
+                value = contactName,
+                onValueChange = { contactName = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(text = "Contact Name") }
+            )
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            OutlinedTextField(
+                value = contactNO,
+                onValueChange = { contactNO = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(text = "Contact No") }
+            )
 
-        Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = 20.dp))
 
-        ButtonRow(
-            onFetchContacts = {
-                coroutineScope.launch {
-                    contactsList = fetchContacts(context)
-                }
-            },
-            onAddContact = {
+            ButtonRow(
+                onFetchContacts = {
+                    coroutineScope.launch {
+                        contactsList = fetchContacts(context)
+                    }
+                },
+                onAddContact = {
                     addContact(context = context, name = contactName, number = contactNO)
-
                 }
-        )
+            )
 
-        Spacer(modifier = Modifier.padding(top = 20.dp))
+            Spacer(modifier = Modifier.padding(top = 20.dp))
 
-        LazyColumn {
-            items(contactsList) { contact ->
-                ContactItem(name = contact.first, number = contact.second)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                items(contactsList) { contact ->
+                    ContactItem(name = contact.first, number = contact.second)
+                }
             }
+
+            Spacer(modifier = Modifier.padding(top = 20.dp))
+
+            AboutSection(studentName = "Muayad El-Haddad", studentID = "301333083")
         }
-
-
     }
 }
+
 
 fun addContact(context: Context, name: String, number: String): Boolean {
     val values = ContentValues().apply {
@@ -244,13 +243,48 @@ fun CircleWithChar(name: String) {
             .background(MaterialTheme.colorScheme.primary)
     ) {
         Text(
-            text = name.take(1),
+            text = name.take(1)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
     }
 }
+@Composable
+fun AboutSection(studentName: String, studentID: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "About",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Student Name: $studentName",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "Student ID: $studentID",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
 @Composable
 fun ButtonRow(
     onFetchContacts: () -> Unit,
