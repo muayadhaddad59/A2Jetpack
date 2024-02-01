@@ -27,9 +27,13 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
+
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
@@ -198,32 +202,55 @@ fun ContactItem(name: String, number: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2. dp),
-
-//        backgroundColor = Color.White,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = number,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Row {
+                CircleWithChar(name = name)
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = number,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
         }
     }
 }
 
 
+@Composable
+fun CircleWithChar(name: String) {
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .padding(16.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+    ) {
+        Text(
+            text = name.take(1),
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
 @Composable
 fun ButtonRow(
     onFetchContacts: () -> Unit,
