@@ -26,6 +26,7 @@ import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.widget.Toast
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -48,13 +49,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestContactsPermission() {
-        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                PERMISSION_REQUEST_CODE
-            )
-        }
+        val permissions = arrayOf(
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS
+        )
+        requestPermissions(permissions, PERMISSION_REQUEST_CODE)
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -64,9 +65,11 @@ class MainActivity : ComponentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with the app's functionality
+                // Permission granted
             } else {
-                // Permission denied, handle accordingly
+                // Permission denied
+                
+
             }
         }
     }
