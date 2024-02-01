@@ -27,6 +27,10 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -186,24 +190,39 @@ fun fetchContacts(context: Context): List<Pair<String, String>> {
 
 
 
-@Composable
-fun AboutSection(studentName: String, studentID: String) {
-    Column {
-        Text("About", style = MaterialTheme.typography.headlineLarge)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Student Name: $studentName", style = MaterialTheme.typography.bodyLarge)
-        Text("Student ID: $studentID", style = MaterialTheme.typography.bodyLarge)
-    }
-}
+
 
 @Composable
 fun ContactItem(name: String, number: String) {
-    Column {
-        Text(text = "Name: $name", style = MaterialTheme.typography.bodyLarge)
-        Text(text = "Number: $number", style = MaterialTheme.typography.bodyLarge)
-        Spacer(modifier = Modifier.height(8.dp))
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2. dp),
+
+//        backgroundColor = Color.White,
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = number,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
+
 
 @Composable
 fun ButtonRow(
